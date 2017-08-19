@@ -23,6 +23,11 @@ var News = React.createClass({
   propTypes: {
     data: React.PropTypes.array.isRequired
   },
+  getInitialState: function() {
+    return {
+      counter: 0
+    };
+  },
   render: function() {
     var data = this.props.data;
     var newsTemplate;
@@ -44,6 +49,9 @@ var News = React.createClass({
           className={"news__count " + (data.length > 0 ? "" : "display-none")}
         >
           Summary: {data.length} news
+        </strong>
+        <strong>
+          {this.state.counter}
         </strong>
       </div>
     );
@@ -95,11 +103,32 @@ var Article = React.createClass({
   }
 });
 
+var TestInput = React.createClass({
+  onBtnClickHandler: function() {
+    alert(ReactDOM.findDOMNode(this.refs.myTestInput).value);
+  },
+  render: function() {
+    return (
+      <div className="testInput">
+        <input
+          className="test-input"
+          type="text"
+          defaultValue=""
+          ref="myTestInput"
+          placeholder="type sth"
+        />
+        <input type="button" value="clickMe" onClick={this.onBtnClickHandler} />
+      </div>
+    );
+  }
+});
+
 var App = React.createClass({
   render: function() {
     return (
       <div className="app">
         <h3>News</h3>
+        <TestInput />
         <News data={my_news} />
         {/*Comment*/}
       </div>
