@@ -103,7 +103,7 @@ var Article = React.createClass({
   }
 });
 
-var TestInput = React.createClass({
+var Add = React.createClass({
   componentDidMount: function() {
     //ставим фокус в input
     ReactDOM.findDOMNode(this.refs.myTestInput).focus();
@@ -111,18 +111,43 @@ var TestInput = React.createClass({
   onBtnClickHandler: function() {
     alert(ReactDOM.findDOMNode(this.refs.myTestInput).value);
   },
+  onCheckRuleClick: function(e) {
+    ReactDOM.findDOMNode(this.refs.alert_button).disabled = !e.target.checked;
+  },
   render: function() {
     return (
-      <div className="testInput">
+      <form className="add cf">
         <input
-          className="test-input"
           type="text"
+          className="add__author"
           defaultValue=""
-          ref="myTestInput"
-          placeholder="type sth"
+          placeholder="Your name"
+          ref="author"
         />
-        <input type="button" value="clickMe" onClick={this.onBtnClickHandler} />
-      </div>
+        <textarea
+          className="add__text"
+          defaultValue=""
+          placeholder="Text news"
+          ref="text"
+        />
+        <label className="add__checkrule">
+          <input
+            type="checkbox"
+            defaultChecked={false}
+            ref="checkrule"
+            onChange={this.onCheckRuleClick}
+            ref="checkrule"
+          />I agree with rules
+        </label>
+        <button
+          className="add__btn"
+          onClick={this.onBtnClickHandler}
+          ref="alert_button"
+          disabled
+        >
+          Show alert
+        </button>
+      </form>
     );
   }
 });
@@ -132,7 +157,7 @@ var App = React.createClass({
     return (
       <div className="app">
         <h3>News</h3>
-        <TestInput />
+        <Add />
         <News data={my_news} />
         {/*Comment*/}
       </div>
