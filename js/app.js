@@ -104,6 +104,10 @@ var Article = React.createClass({
 });
 
 var TestInput = React.createClass({
+  componentDidMount: function() {
+    //ставим фокус в input
+    ReactDOM.findDOMNode(this.refs.myTestInput).focus();
+  },
   onBtnClickHandler: function() {
     alert(ReactDOM.findDOMNode(this.refs.myTestInput).value);
   },
