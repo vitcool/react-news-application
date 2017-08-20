@@ -109,10 +109,17 @@ var Add = React.createClass({
     ReactDOM.findDOMNode(this.refs.myTestInput).focus();
   },
   onBtnClickHandler: function() {
-    alert(ReactDOM.findDOMNode(this.refs.myTestInput).value);
+    var author = ReactDOM.findDOMNode(this.refs.author).value;
+    var text = ReactDOM.findDOMNode(this.refs.text).value;
+    alert(author + '\n' + text);
+  },
+  getInitialState: function() { //устанавливаем начальное состояние (state)
+    return {
+      btnIsDisabled: true
+    };
   },
   onCheckRuleClick: function(e) {
-    ReactDOM.findDOMNode(this.refs.alert_button).disabled = !e.target.checked;
+    this.setState({btnIsDisabled: !this.state.btnIsDisabled}); //устанавливаем значение в state
   },
   render: function() {
     return (
@@ -133,8 +140,6 @@ var Add = React.createClass({
         <label className="add__checkrule">
           <input
             type="checkbox"
-            defaultChecked={false}
-            ref="checkrule"
             onChange={this.onCheckRuleClick}
             ref="checkrule"
           />I agree with rules
@@ -143,7 +148,7 @@ var Add = React.createClass({
           className="add__btn"
           onClick={this.onBtnClickHandler}
           ref="alert_button"
-          disabled
+          disabled={this.state.btnIsDisabled}
         >
           Show alert
         </button>
