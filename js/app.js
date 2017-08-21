@@ -104,24 +104,37 @@ var Article = React.createClass({
 });
 
 var Add = React.createClass({
+  getInitialState: function() {
+    //устанавливаем начальное состояние (state)
+    return {
+      agreeNotChecked: true,
+      authorIsEmpty: true,
+      textIsEmpty: true
+    };
+  },
   componentDidMount: function() {
     //ставим фокус в input
-    ReactDOM.findDOMNode(this.refs.myTestInput).focus();
+    ReactDOM.findDOMNode(this.refs.author).focus();
   },
   onBtnClickHandler: function() {
     var author = ReactDOM.findDOMNode(this.refs.author).value;
     var text = ReactDOM.findDOMNode(this.refs.text).value;
-    alert(author + '\n' + text);
-  },
-  getInitialState: function() { //устанавливаем начальное состояние (state)
-    return {
-      btnIsDisabled: true
-    };
+    alert(author + "\n" + text);
   },
   onCheckRuleClick: function(e) {
-    this.setState({btnIsDisabled: !this.state.btnIsDisabled}); //устанавливаем значение в state
+    this.setState({ agreeNotChecked: !this.state.agreeNotChecked }); //устанавливаем значение в state
+  },
+  onFieldChange: function(fieldName, e) {
+    if (e.target.value.trim()) {
+      this.setState({[''+fieldName]:false})
+    } else {
+      this.setState({[''+fieldName]:true})
+    }
   },
   render: function() {
+    var agreeNotChecked = this.state.agreeNotChecked,
+      authorIsEmpty = this.state.authorIsEmpty,
+      textIsEmpty = this.state.textIsEmpty;
     return (
       <form className="add cf">
         <input
@@ -130,12 +143,14 @@ var Add = React.createClass({
           defaultValue=""
           placeholder="Your name"
           ref="author"
+          onChange={this.onFieldChange.bind(this, 'authorIsEmpty')}
         />
         <textarea
           className="add__text"
           defaultValue=""
           placeholder="Text news"
           ref="text"
+          onChange={this.onFieldChange.bind(this, 'textIsEmpty')}
         />
         <label className="add__checkrule">
           <input
@@ -148,7 +163,7 @@ var Add = React.createClass({
           className="add__btn"
           onClick={this.onBtnClickHandler}
           ref="alert_button"
-          disabled={this.state.btnIsDisabled}
+          disabled={agreeNotChecked || authorIsEmpty || textIsEmpty}
         >
           Show alert
         </button>
