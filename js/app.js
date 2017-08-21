@@ -1,3 +1,7 @@
+'use strict';
+
+window.ee = new EventEmitter();
+
 var my_news = [
   {
     author: "Vasia Pupkin",
@@ -116,19 +120,32 @@ var Add = React.createClass({
     //ставим фокус в input
     ReactDOM.findDOMNode(this.refs.author).focus();
   },
-  onBtnClickHandler: function() {
+  onBtnClickHandler: function(e) {
+    e.preventDefault();
+    var textEl = ReactDOM.findDOMNode(this.refs.text);
+  
     var author = ReactDOM.findDOMNode(this.refs.author).value;
-    var text = ReactDOM.findDOMNode(this.refs.text).value;
-    alert(author + "\n" + text);
+    var text = textEl.value;
+  
+    var item = [{
+      author: author,
+      text: text,
+      bigText: '...'
+    }];
+  
+    window.ee.emit('News.add', item);
+  
+    textEl.value = '';
+    this.setState({textIsEmpty: true});
   },
   onCheckRuleClick: function(e) {
     this.setState({ agreeNotChecked: !this.state.agreeNotChecked }); //устанавливаем значение в state
   },
   onFieldChange: function(fieldName, e) {
     if (e.target.value.trim()) {
-      this.setState({[''+fieldName]:false})
+      this.setState({ ["" + fieldName]: false });
     } else {
-      this.setState({[''+fieldName]:true})
+      this.setState({ ["" + fieldName]: true });
     }
   },
   render: function() {
@@ -143,14 +160,14 @@ var Add = React.createClass({
           defaultValue=""
           placeholder="Your name"
           ref="author"
-          onChange={this.onFieldChange.bind(this, 'authorIsEmpty')}
+          onChange={this.onFieldChange.bind(this, "authorIsEmpty")}
         />
         <textarea
           className="add__text"
           defaultValue=""
           placeholder="Text news"
           ref="text"
-          onChange={this.onFieldChange.bind(this, 'textIsEmpty')}
+          onChange={this.onFieldChange.bind(this, "textIsEmpty")}
         />
         <label className="add__checkrule">
           <input
@@ -165,7 +182,7 @@ var Add = React.createClass({
           ref="alert_button"
           disabled={agreeNotChecked || authorIsEmpty || textIsEmpty}
         >
-          Show alert
+          Add news
         </button>
       </form>
     );
@@ -173,11 +190,26 @@ var Add = React.createClass({
 });
 
 var App = React.createClass({
+  getInitialState: function() {
+    return {
+      news: my_news
+    };
+  },
+  componentDidMount: function() {
+    var self = this;
+    window.ee.addListener("News.add", function(item) {
+      var nextNews = item.concat(self.state.news);
+      self.setState({ news: nextNews });
+    });
+  },
+  componentWillUnmount: function() {
+    window.ee.removeListener("News.add");
+  },
   render: function() {
     return (
       <div className="app">
-        <h3>News</h3>
         <Add />
+        <h3>News</h3>
         <News data={my_news} />
         {/*Comment*/}
       </div>
